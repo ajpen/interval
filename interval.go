@@ -9,7 +9,7 @@ import (
 
 
 
-// NewInterval runs the task after the duration, forever. 
+// NewInterval runs the task after the duration, forever. Tasks should be designed as goroutine compatible
 func NewInterval(duration time.Duration, task func()) error {
 	if duration <= 0 {
 		return errors.New("Duration must be greater than 0")
@@ -20,7 +20,28 @@ func NewInterval(duration time.Duration, task func()) error {
 	go func (task func()) {
 			
 		for _ = range ticks {
-			task()
+			go task()
+		}
+	}(task)
+
+	return nil
+}
+
+
+// NewTicker runs the task after the duration. The underlying ticker is exposed through ticker
+func Ticker(duration time.Duration, task func(), ticker **time.Ticker) error {
+	
+	if duration <= 0 {
+		return errors.New("Duration must be greater than 0")
+	}
+
+	*ticker = time.NewTicker(duration)
+
+	go func (task func()) {
+		
+		for _ = range (*ticker).C {
+
+			go task()
 		}
 	}(task)
 
