@@ -1,4 +1,4 @@
-// Package interval runs functions at specific intervals, wrapping the standard library ticker 
+// Package interval runs functions(tasks) at specific intervals, wrapping the standard library ticker, Tasks should be designed as goroutine compatible
 package interval
 
 import (
@@ -9,7 +9,7 @@ import (
 
 
 
-// NewInterval runs the task after the duration, forever. Tasks should be designed as goroutine compatible
+// NewInterval runs the task after the duration, forever. 
 func NewInterval(duration time.Duration, task func()) error {
 	if duration <= 0 {
 		return errors.New("Duration must be greater than 0")
